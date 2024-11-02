@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/data/aztables"
 )
@@ -98,6 +99,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	client := serviceClient.NewClient(TABLE_NAME)
 	key := path.Base(r.URL.Path)
+	if strings.Contains(key, "/") {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	if key != "url_shortener" {
 		if r.Method == "GET" {
